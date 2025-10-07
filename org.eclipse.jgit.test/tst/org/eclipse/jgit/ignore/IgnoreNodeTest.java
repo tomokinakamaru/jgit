@@ -59,6 +59,31 @@ public class IgnoreNodeTest extends RepositoryTestCase {
 	}
 
 	@Test
+	public void test1() throws IOException {
+		writeIgnoreFile(".gitignore", "foo**/bar");
+
+		writeTrashFile("foobar", "");
+
+		beginWalk();
+		assertEntry(F, tracked, ".gitignore");
+		assertEntry(F, ignored, "foobar");
+		endWalk();
+	}
+
+    @Test
+    public void test2() throws IOException {
+        writeIgnoreFile(".gitignore", "foo\\");
+
+        writeTrashFile("foo/foo\\", "");
+
+        beginWalk();
+        assertEntry(F, tracked, ".gitignore");
+        assertEntry(D, tracked, "foo");
+        assertEntry(F, tracked, "foo/foo\\");
+        endWalk();
+    }
+
+	@Test
 	public void testSimpleRootGitIgnoreGlobalIgnore() throws IOException {
 		writeIgnoreFile(".gitignore", "x");
 
